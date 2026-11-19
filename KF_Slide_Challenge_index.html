@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a1021">
+  <title>KF Server | Player Portal</title>
+  <style>
+    :root{color-scheme:dark;--bg:#090f1e;--panel:#121e35;--panel2:#172743;--muted:#a3b4cd;--line:#304363;--bright:#eaf3ff;--blue:#528bff;--mint:#6de6be}
+    *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:radial-gradient(ellipse at 15% -10%,#233e75 0%,transparent 42%),var(--bg);color:var(--bright)}
+    header{padding:22px max(24px,calc((100vw - 1100px)/2));border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+    .brand{font-weight:900;font-size:1.4rem;letter-spacing:-.04em}.brand span{color:var(--mint)}nav{font-size:.88rem;color:var(--muted)}
+    main{max-width:1100px;margin:0 auto;padding:54px 24px 85px}.hero{display:grid;grid-template-columns:1.4fr 1fr;gap:30px;align-items:center;margin-bottom:35px}
+    .eyebrow{color:var(--mint);font-size:.75rem;letter-spacing:.18em;font-weight:800}h1{font-size:clamp(2.25rem,5vw,4rem);line-height:1.03;letter-spacing:-.065em;margin:14px 0 16px}p{color:var(--muted);line-height:1.7}h2{font-size:1.15rem;margin:0 0 12px} .hero-art{padding:32px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(135deg,#263d66,#14213b);display:grid;place-items:center;min-height:260px;box-shadow:0 20px 60px #0005}
+    .cube{width:130px;height:130px;transform:rotate(-13deg);background:linear-gradient(135deg,#84eec5 0 24%,#407c58 24% 36%,#92673f 36% 70%,#68462c 70%);box-shadow:14px 18px 0 #1d4939,22px 26px 45px #0009;border:5px solid #8ee5bb;border-radius:9px}
+    .layout{display:grid;grid-template-columns:1fr 1fr;gap:20px}.panel{background:linear-gradient(155deg,var(--panel),#101a2e);border:1px solid var(--line);border-radius:18px;padding:26px}.wide{grid-column:1/-1}.pill{display:inline-block;background:#1d3557;color:#b9d5fb;border:1px solid #36598a;padding:6px 10px;border-radius:99px;font-size:.75rem;font-weight:700}
+    label{display:block;color:#c6d6e9;margin:20px 0 8px;font-size:.85rem;font-weight:700}input{width:100%;border:1px solid #405478;background:#0c1527;color:white;border-radius:11px;padding:14px;font:inherit;outline:none}input:focus{border-color:var(--blue)}button{border:0;border-radius:11px;background:var(--blue);padding:13px 20px;color:white;font-weight:800;cursor:pointer;font:inherit}button:disabled{background:#496080;cursor:not-allowed}button.secondary{background:#223955;border:1px solid #3d5980}button:hover:not(:disabled){filter:brightness(1.12)}.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}.balance{font-size:clamp(2.2rem,5vw,3rem);font-weight:900;letter-spacing:-.04em;color:var(--mint);margin:12px 0}.small{font-size:.82rem;color:var(--muted)}.note{padding:13px 16px;background:#162c39;border:1px solid #275c5d;border-radius:12px;font-size:.84rem;color:#b7e6e3}.notice{margin-top:14px;font-size:.82rem;color:#d6cb91}.status{font-size:.83rem;color:#b5c7e3;margin-top:13px;min-height:1.5em}.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.step{background:#192942;border:1px solid var(--line);border-radius:14px;padding:19px}.step b{color:#9bbdff}.step p{margin-bottom:0;font-size:.86rem}.mono{font-family:ui-monospace,Consolas,monospace;letter-spacing:.04em}footer{border-top:1px solid var(--line);padding:22px;text-align:center;color:var(--muted);font-size:.8rem}
+    @media(max-width:750px){.hero,.layout{grid-template-columns:1fr}.hero-art{min-height:165px}.cube{width:85px;height:85px}main{padding-top:35px}.steps{grid-template-columns:1fr}.panel{padding:20px}}
+
+    .tabs{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 22px}.tabs button{background:#1a2d4b;border:1px solid #38547e;padding:11px 18px}.tabs button[aria-selected="true"]{background:#528bff;border-color:#80acff}.tab-panel[hidden]{display:none}.games{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:14px 0}.choice-grid button{background:#223955;border:1px solid #49668e;text-align:left}.choice-grid button:disabled{opacity:.75}.stat-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}.stat-box{background:#1a304e;border:1px solid #355780;border-radius:13px;padding:12px 16px;flex:1;min-width:125px}.stat-box strong{display:block;font-size:1.45rem;color:#6de6be}.stat-box span{color:#a3b4cd;font-size:.81rem}.game-display{font-size:2rem;font-weight:900;color:#6de6be;letter-spacing:.04em;margin:12px 0}.safe-banner{background:#152c39;border:1px solid #376d71;border-radius:14px;padding:15px;color:#c4eeec;line-height:1.55}.leaderboard{display:grid;gap:10px;margin-top:14px}.leader-row{display:flex;align-items:center;justify-content:space-between;border:1px solid #334c70;background:#142540;border-radius:12px;padding:11px 14px}.leader-row strong{color:#6de6be}.visible-label{font-size:.78rem;color:#9db1d0;margin-bottom:6px}.accent{color:#6de6be}.panel h3{margin:13px 0 8px}.right{margin-left:auto}.tiny{font-size:.72rem;color:#9cacc5}.quiz-status{font-weight:700;color:#a9caff;min-height:1.5em}.button-row{display:flex;gap:10px;flex-wrap:wrap}.button-row button{flex:1}.tag{border:1px solid #416291;background:#1a3151;color:#c8defe;border-radius:999px;padding:5px 9px;font-size:.78rem}button:focus-visible,input:focus-visible{outline:3px solid #6de6be;outline-offset:3px}
+    @media(max-width:750px){.games{grid-template-columns:1fr}.tabs button{flex:1}.choice-grid{grid-template-columns:1fr}}
+
+    .slide-shell{background:linear-gradient(150deg,#121d34,#0c1427);border:1px solid #3b5074;border-radius:22px;padding:24px;box-shadow:0 20px 70px #0004}.slide-heading{display:flex;align-items:center;gap:14px;justify-content:space-between;flex-wrap:wrap}.slide-heading h2{font-size:1.65rem;margin:4px 0}.slide-strip-wrap{position:relative;overflow:hidden;height:166px;margin:22px 0 14px;border:1px solid #405679;border-radius:16px;background:repeating-linear-gradient(90deg,#111d35 0 91px,#162541 91px 100px)}.slide-pointer{z-index:3;position:absolute;top:0;bottom:0;left:50%;width:4px;background:#68e8c4;transform:translateX(-50%);box-shadow:0 0 19px #68e8c4}.slide-pointer:before{content:'▼';position:absolute;top:0;left:50%;transform:translateX(-50%);font-size:21px;line-height:1;color:#68e8c4}.slide-pointer:after{content:'▲';position:absolute;bottom:0;left:50%;transform:translateX(-50%);font-size:21px;line-height:1;color:#68e8c4}.slide-track{display:flex;gap:8px;position:absolute;top:24px;left:0;will-change:transform}.slide-tile{flex:0 0 105px;height:118px;border:1px solid #446290;background:linear-gradient(150deg,#24436a,#142540);border-radius:14px;display:grid;place-items:center;align-content:center;text-align:center;color:#dceaff;font-weight:900;font-size:1.08rem}.slide-tile span{display:block;font-size:1.6rem;color:#75f1c9;margin-bottom:7px}.slide-tile.target{border-color:#d7b35f;background:linear-gradient(150deg,#584422,#302719)}.slide-meter{height:10px;border-radius:99px;background:#213554;overflow:hidden;border:1px solid #3a547b;margin:18px 0}.slide-meter>div{height:100%;background:#6de6be;width:0%;transition:width .1s linear}.slide-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.slide-instructions{margin:12px 0;color:#b4c4dc}.slide-level{font-weight:900;color:#6de6be;font-size:1.5rem}.slide-shell .actions button{min-width:140px}.slide-result{min-height:28px;color:#d1e3ff;font-weight:700;margin:15px 0}.slide-crate{border:1px solid #a7894d;background:#3e321f;padding:16px;border-radius:15px;margin-top:18px}.slide-crate[hidden]{display:none}.slide-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.slide-note{font-size:.82rem;color:#a4b6d1;margin-top:22px}@media(max-width:750px){.slide-grid{grid-template-columns:1fr}.slide-shell{padding:17px}}
+  </style>
+</head>
+<body>
+<header><div class="brand">KF<span>SERVER</span> <span style="color:#9ab3d6;font-weight:500">/ Player Portal</span></div><nav>Accounts · Balance · Skill Games</nav></header>
+<main>
+ <section class="hero"><div><div class="eyebrow">MINECRAFT SERVER PLAYER PORTAL</div><h1>Your Minecraft portal.<br>One place to play.</h1><p>Preview your Minecraft profile, explore your dashboard, and play free skill challenges.</p><span class="pill">DEMO PREVIEW — NOT CONNECTED TO A LIVE SERVER</span></div><div class="hero-art" aria-hidden="true"><div class="cube"></div></div></section>
+ <div class="tabs" role="tablist" aria-label="Portal sections"><button type="button" id="tab-account" role="tab" aria-selected="true" aria-controls="account-area">Account Dashboard</button><button type="button" id="tab-games" role="tab" aria-selected="false" aria-controls="games-area">Free Games</button><button type="button" id="tab-slide" role="tab" aria-selected="false" aria-controls="slide-area">Slide Challenge</button><button type="button" id="tab-about" role="tab" aria-selected="false" aria-controls="about-area">How Linking Works</button></div>
+ <div id="account-area" class="tab-panel" role="tabpanel" aria-labelledby="tab-account">
+ <section class="layout">
+  <article class="panel"><h2>Link your Minecraft account</h2><p>Enter your Java username to preview the linking experience. Actual verification requires a server plugin that proves account ownership.</p><label for="username">Minecraft username</label><input id="username" maxlength="16" placeholder="e.g. Voxxel1" autocomplete="off"><div class="actions"><button id="linkbtn">Preview link</button><button id="unlinkbtn" class="secondary">Reset</button></div><div id="linkstatus" class="status" role="status"></div><p class="small">For a real website, players would receive a short code and enter it in-game using <span class="mono">/link &lt;code&gt;</span>, then the server would verify it.</p></article>
+  <article class="panel"><h2>Economy dashboard</h2><span class="pill">READ-ONLY SAMPLE DATA</span><p class="small">Linked player</p><div id="playername" style="font-weight:800;font-size:1.15rem">Not linked</div><p class="small" style="margin-top:24px">In-game balance (example)</p><div id="balance" class="balance">—</div><p class="small">Powered by your EssentialsX/Vault economy once a secure backend is connected.</p><div class="note">This preview does not add or withdraw currency, charge payments, or modify Minecraft balances.</div></article>
+ </section>
+ </div>
+ <div id="games-area" class="tab-panel" role="tabpanel" aria-labelledby="tab-games" hidden>
+  <div class="safe-banner"><strong>Just-for-fun games.</strong> Game points are free, local to this browser, and cannot be purchased, wagered, redeemed, withdrawn, or exchanged for Minecraft currency. Your EssentialsX money is always separate.</div>
+  <div class="stat-row"><div class="stat-box"><strong id="points">0</strong><span>Game points</span></div><div class="stat-box"><strong id="wins">0</strong><span>Challenges solved</span></div><div class="stat-box"><strong id="streak">0</strong><span>Current correct streak</span></div></div>
+  <div class="games" style="margin-top:20px">
+   <article class="panel"><span class="tag">Minecraft Quiz</span><h2 style="margin-top:15px">Block Knowledge</h2><p>Choose the correct answer. Earn 20 free points for each correct answer. No entry fee or penalty.</p><div id="quiz-question" style="font-size:1.15rem;font-weight:750;margin-top:18px"></div><div class="choice-grid" id="quiz-choices"></div><div class="quiz-status" id="quiz-status" aria-live="polite"></div><button type="button" id="next-question" class="secondary">Next question</button></article>
+   <article class="panel"><span class="tag">Quick Challenge</span><h2 style="margin-top:15px">Minecraft Memory</h2><p>Memorize a short sequence of blocks. Earn 30 free points for a correct answer. You never lose points.</p><div id="memory-target" class="game-display" aria-live="polite">Ready?</div><p class="small" id="memory-instructions">Press Show Sequence to begin.</p><div class="button-row"><button type="button" id="start-memory">Show Sequence</button><button type="button" id="check-memory" class="secondary">Check Answer</button></div><label for="memory-answer">Type the three block initials</label><input id="memory-answer" maxlength="3" placeholder="e.g. DSO" autocomplete="off" spellcheck="false"><div class="quiz-status" id="memory-status" aria-live="polite" style="margin-top:12px"></div></article>
+  </div>
+  <article class="panel" style="margin-top:20px"><h2>Free Game Activity</h2><p class="small">This is a local browser demo, not a public leaderboard. Your points remain on this device unless you clear browser storage.</p><div class="leaderboard" id="game-activity"></div><div class="actions"><button type="button" class="secondary" id="reset-game-points">Reset game points</button></div></article>
+ </div>
+
+ <div id="slide-area" class="tab-panel" role="tabpanel" aria-labelledby="tab-slide" hidden>
+  <div class="slide-shell">
+   <div class="slide-heading"><div><span class="eyebrow">KF SERVER · FREE SKILL CHALLENGE</span><h2>Slide Challenge</h2><p class="small">Stop the moving strip when the golden target is under the center marker. Timing matters!</p></div><span class="pill">NO DEPOSITS OR BETTING</span></div>
+   <div class="stat-row"><div class="stat-box"><strong id="slide-score">0</strong><span>Slide score</span></div><div class="stat-box"><strong id="slide-level">1</strong><span>Difficulty level</span></div><div class="stat-box"><strong id="slide-best">0</strong><span>Best streak</span></div></div>
+   <div class="slide-strip-wrap" id="slide-viewport" aria-label="Moving tiles with a gold target, centered green marker"><div class="slide-track" id="slide-track"></div><div class="slide-pointer"></div></div>
+   <div class="slide-grid"><div><div class="slide-level" id="slide-difficulty">Level 1 · Easy</div><p class="slide-instructions" id="slide-instructions">Press Start Round. Then press Stop Slide when the golden tile reaches the center line.</p><div class="slide-controls"><button type="button" id="slide-start">Start Round</button><button type="button" class="secondary" id="slide-stop" disabled>Stop Slide</button></div><div class="slide-result" id="slide-result" role="status" aria-live="polite">Ready when you are.</div></div><div class="panel"><h2>How to play</h2><p>Each successful stop earns <strong>25 score points</strong>. You never lose points for missing. As your streak grows, the strip moves faster and the target gets smaller.</p><p class="small">Your score is for this browser only. It cannot be bought, sold, transferred, withdrawn, or exchanged for Minecraft currency.</p></div></div>
+   <div class="slide-crate" id="slide-crate" hidden><strong>🎁 Rare discovery!</strong><p style="margin:8px 0">You found a decorative crate badge. It is just a collectible and has no cash or server-currency value.</p><button type="button" id="slide-claim">Collect badge</button></div>
+   <p class="slide-note">This is an original timing-based mini-game, not an online casino or Minecraft economy integration. No real or in-game money is at risk.</p>
+  </div>
+ </div>
+ <div id="about-area" class="tab-panel" role="tabpanel" aria-labelledby="tab-about"><section class="layout">  <article class="panel wide"><h2>How real account linking would work</h2><div class="steps"><div class="step"><b>01 / Sign in</b><p>The player creates an account and requests a short one-time linking code.</p></div><div class="step"><b>02 / Verify in Minecraft</b><p>The player enters the code in your server. A trusted plugin confirms their Minecraft UUID.</p></div><div class="step"><b>03 / View balance</b><p>A secure server API reads the player's Vault/EssentialsX balance and displays it here.</p></div></div><p class="notice">Security note: never put your server console password, RCON password, or API secret in this HTML. Keep those on your backend.</p></article>
+ </section></div>
+</main>
+<footer>KF Server — free skill games & account dashboard demo</footer>
+<script>
+const username=document.getElementById('username');
+const linkstatus=document.getElementById('linkstatus');
+const playername=document.getElementById('playername');
+const balance=document.getElementById('balance');
+const reset=()=>{username.value='';playername.textContent='Not linked';balance.textContent='—';linkstatus.textContent='';};
+document.getElementById('linkbtn').addEventListener('click',()=>{
+ const name=username.value.trim();
+ if(!/^[A-Za-z0-9_]{3,16}$/.test(name)){linkstatus.textContent='Enter a valid Minecraft Java username (3–16 letters, numbers, or underscores).';return;}
+ playername.textContent=name;
+ balance.textContent='Not connected';
+ linkstatus.textContent='Preview linked: '+name+'. This does not verify or connect to your Minecraft account.';
+});
+document.getElementById('unlinkbtn').addEventListener('click',reset);
+
+// Dashboard tabs. There is no live Minecraft or payment connection in this static page.
+const tabs=['account','games','slide','about'];
+function showTab(which){
+  for(const key of tabs){
+    document.getElementById('tab-'+key).setAttribute('aria-selected',String(key===which));
+    document.getElementById(key+'-area').hidden=key!==which;
+  }
+}
+for(const key of tabs) document.getElementById('tab-'+key).addEventListener('click',()=>showTab(key));
+
+// Free, non-redeemable points. Never link these values to the Minecraft economy.
+const STORE='kf_portal_free_game_points_v1';
+const defaultGame=()=>({points:0,wins:0,streak:0,activity:[]});
+let game=defaultGame();
+try{
+ const saved=JSON.parse(localStorage.getItem(STORE));
+ if(saved && Number.isSafeInteger(saved.points) && saved.points>=0 && Number.isSafeInteger(saved.wins)&&saved.wins>=0){game={...defaultGame(),...saved};}
+}catch(_e){}
+function saveGame(){localStorage.setItem(STORE,JSON.stringify(game));renderGame();}
+function renderGame(){
+ document.getElementById('points').textContent=Number(game.points).toLocaleString();
+ document.getElementById('wins').textContent=Number(game.wins).toLocaleString();
+ document.getElementById('streak').textContent=Number(game.streak).toLocaleString();
+ const el=document.getElementById('game-activity');el.replaceChildren();
+ for(const entry of game.activity.slice(0,6)){
+  const line=document.createElement('div');line.className='leader-row';
+  const label=document.createElement('span');label.textContent=entry.name;
+  const amount=document.createElement('strong');amount.textContent='+'+entry.points+' points';
+  line.append(label,amount);el.appendChild(line);
+ }
+ if(!game.activity.length){const small=document.createElement('p');small.className='small';small.textContent='No challenges completed yet.';el.appendChild(small);}
+}
+function reward(name,amount){game.points+=amount;game.wins++;game.streak++;game.activity.unshift({name,points:amount});game.activity=game.activity.slice(0,8);saveGame();}
+const quizzes=[
+ {q:'What block is required to grow Nether Wart?',a:['Soul Sand','Dirt','Sand','Farmland'],correct:0},
+ {q:'What wood type can cocoa beans grow on?',a:['Spruce','Jungle','Birch','Oak'],correct:1},
+ {q:'Which item can help bamboo grow faster?',a:['Bone Meal','Coal','Flint','Clay'],correct:0},
+ {q:'Which Nether block is used to summon a Wither?',a:['Netherrack','Soul Sand','Blackstone','Basalt'],correct:1},
+ {q:'Which tool is best for mining stone?',a:['Hoe','Sword','Pickaxe','Shears'],correct:2},
+ {q:'Which crop grows on Soul Sand?',a:['Carrots','Potatoes','Nether Wart','Wheat'],correct:2}
+];
+let quizIndex=0,quizAnswered=false;
+function renderQuiz(){quizAnswered=false;const quiz=quizzes[quizIndex%quizzes.length];document.getElementById('quiz-question').textContent=quiz.q;document.getElementById('quiz-status').textContent='';const el=document.getElementById('quiz-choices');el.replaceChildren();quiz.a.forEach((answer,i)=>{const btn=document.createElement('button');btn.type='button';btn.textContent=answer;btn.addEventListener('click',()=>{
+ if(quizAnswered)return;quizAnswered=true;for(const b of el.children)b.disabled=true;
+ if(i===quiz.correct){reward('Block Knowledge',20);document.getElementById('quiz-status').textContent='Correct! +20 free points.';}
+ else{game.streak=0;saveGame();document.getElementById('quiz-status').textContent='Not quite. Correct answer: '+quiz.a[quiz.correct]+'. No points lost.';}
+ });el.appendChild(btn);});}
+document.getElementById('next-question').addEventListener('click',()=>{quizIndex++;renderQuiz();});
+let memoryAnswer='',memoryReady=false, memoryRound=0;
+const memoryBlocks=[['Dirt','D'],['Stone','S'],['Oak','O'],['Glass','G'],['Wool','W']];
+document.getElementById('start-memory').addEventListener('click',()=>{
+ memoryRound++;const offset=memoryRound%memoryBlocks.length;
+ const chosen=[0,1,2].map((n)=>memoryBlocks[(offset+n*2)%memoryBlocks.length]);
+ memoryAnswer=chosen.map(v=>v[1]).join('');memoryReady=true;
+ document.getElementById('memory-target').textContent=chosen.map(v=>v[0]).join(' · ');
+ document.getElementById('memory-instructions').textContent='Remember the first letter of each block, then type them below.';
+ document.getElementById('memory-status').textContent='';document.getElementById('memory-answer').value='';
+});
+document.getElementById('check-memory').addEventListener('click',()=>{
+ if(!memoryReady){document.getElementById('memory-status').textContent='Press Show Sequence first.';return;}
+ const submitted=document.getElementById('memory-answer').value.trim().toUpperCase();
+ if(submitted.length!==3){document.getElementById('memory-status').textContent='Enter three letters.';return;}
+ memoryReady=false;document.getElementById('memory-target').textContent='Round complete';
+ if(submitted===memoryAnswer){reward('Minecraft Memory',30);document.getElementById('memory-status').textContent='Correct! +30 free points.';}
+ else{game.streak=0;saveGame();document.getElementById('memory-status').textContent='Try again next round. Answer: '+memoryAnswer+'. No points lost.';}
+});
+document.getElementById('reset-game-points').addEventListener('click',()=>{if(confirm('Reset free game points on this browser?')){game=defaultGame();saveGame();}});
+
+// Slide: skill-based timing challenge, no bets or economy access.
+const slideKey='kf_slide_skill_v1';
+let slideStats={score:0,level:1,best:0,streak:0,badges:0};
+try{const loaded=JSON.parse(localStorage.getItem(slideKey));if(loaded && typeof loaded==='object')for(const key of Object.keys(slideStats)){if(Number.isSafeInteger(loaded[key])&&loaded[key]>=0&&loaded[key]<100000000)slideStats[key]=loaded[key];}}catch(e){}
+let slideRunning=false,slideFrame=0,slideLast=0,slidePosition=0,slideSpeed=0,slideTarget=0,slideWidth=105;
+const slideTrack=document.getElementById('slide-track');
+const slideViewport=document.getElementById('slide-viewport');
+function slideSave(){try{localStorage.setItem(slideKey,JSON.stringify(slideStats));}catch(e){}slideRender();}
+function slideRender(){document.getElementById('slide-score').textContent=slideStats.score.toLocaleString();document.getElementById('slide-level').textContent=slideStats.level;document.getElementById('slide-best').textContent=slideStats.best;document.getElementById('slide-difficulty').textContent='Level '+slideStats.level+' · '+(slideStats.level<4?'Easy':slideStats.level<9?'Medium':'Expert');}
+function slideBuildTiles(){slideTrack.replaceChildren();for(let i=0;i<35;i++){const tile=document.createElement('div');tile.className='slide-tile'+(i===slideTarget?' target':'');const symbol=document.createElement('span');symbol.textContent=i===slideTarget?'★':'◆';tile.append(symbol,document.createTextNode(i===slideTarget?'TARGET':'BLOCK'));slideTrack.appendChild(tile);}}
+function slideLoop(now){if(!slideRunning)return;if(slideLast)slidePosition-=Math.min(50,now-slideLast)*slideSpeed;slideLast=now;const center=slideViewport.clientWidth/2;const targetX=slideTarget*113+56.5+slidePosition;const cycle=113*35; // looping movement makes new attempts possible
+if(targetX < -200)slidePosition+=cycle;
+slideTrack.style.transform='translateX('+slidePosition+'px)';slideFrame=requestAnimationFrame(slideLoop);}
+function slideStart(){if(slideRunning)return;document.getElementById('slide-crate').hidden=true;slideTarget=18;slideSpeed=Math.min(1.9,0.38+slideStats.level*.085);slideWidth=Math.max(23,95-slideStats.level*5);slidePosition=slideViewport.clientWidth/2-slideTarget*113-56.5+slideViewport.clientWidth*.62;slideBuildTiles();slideRunning=true;slideLast=0;document.getElementById('slide-result').textContent='Time your stop at the green center marker!';document.getElementById('slide-start').disabled=true;document.getElementById('slide-stop').disabled=false;slideFrame=requestAnimationFrame(slideLoop);}
+function slideStop(){if(!slideRunning)return;slideRunning=false;cancelAnimationFrame(slideFrame);const center=slideViewport.clientWidth/2;let centerOfTarget=slideTarget*113+56.5+slidePosition;const period=113*35;while(centerOfTarget<center-period/2)centerOfTarget+=period;while(centerOfTarget>center+period/2)centerOfTarget-=period;const gap=Math.abs(center-centerOfTarget);const succeeded=gap<=slideWidth/2;
+document.getElementById('slide-start').disabled=false;document.getElementById('slide-stop').disabled=true;if(succeeded){slideStats.score+=25;slideStats.streak++;slideStats.best=Math.max(slideStats.best,slideStats.streak);slideStats.level=Math.min(20,1+Math.floor(slideStats.streak/2));document.getElementById('slide-result').textContent='Target hit! +25 score points. Streak: '+slideStats.streak+'.';if(Math.random()<.01){document.getElementById('slide-crate').hidden=false;}}else{slideStats.streak=0;slideStats.level=1;document.getElementById('slide-result').textContent='Missed the target by '+Math.round(gap)+' px. Try again! No points lost.';}slideSave();}
+document.getElementById('slide-start').addEventListener('click',slideStart);document.getElementById('slide-stop').addEventListener('click',slideStop);
+document.getElementById('slide-claim').addEventListener('click',()=>{slideStats.badges++;slideSave();document.getElementById('slide-crate').hidden=true;document.getElementById('slide-result').textContent='Crate badge collected! Total found: '+slideStats.badges+'.';});
+slideRender();
+
+renderGame();renderQuiz();
+</script>
+</body>
+</html>
